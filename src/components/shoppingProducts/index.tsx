@@ -36,12 +36,6 @@ import {
 } from "wagmi";
 import { utils } from "ethers";
 
-type Cart = {
-  id: string;
-  value: number;
-  name: string;
-};
-
 export default function ShoppingProductsDrawer() {
   const { isConnected } = useAccount();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -52,8 +46,8 @@ export default function ShoppingProductsDrawer() {
   } = useDisclosure();
 
   const toast = useToast();
-  const cancelRefAlert = React.useRef();
-  const btnRef = React.useRef<HTMLInputElement>(null);
+  const cancelRefAlert = React.useRef<HTMLInputElement>(null);
+  const btnRef = React.useRef<HTMLButtonElement>(null);
   const { cart, setCart } = useShoppingCart();
 
   const [total, setTotal] = React.useState("");
