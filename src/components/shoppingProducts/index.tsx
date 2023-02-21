@@ -22,7 +22,7 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
 } from "@chakra-ui/react";
-import { useDisclosure,useToast } from "@chakra-ui/react";
+import { useDisclosure, useToast } from "@chakra-ui/react";
 
 import { FiShoppingCart } from "react-icons/fi";
 import { useShoppingCart } from "../../hook/useShoppingCart";
@@ -32,12 +32,18 @@ import {
   usePrepareSendTransaction,
   useSendTransaction,
   useWaitForTransaction,
-  useAccount
+  useAccount,
 } from "wagmi";
 import { utils } from "ethers";
 
+type Cart = {
+  id: string;
+  value: number;
+  name: string;
+};
+
 export default function ShoppingProductsDrawer() {
-  const {isConnected} = useAccount()
+  const { isConnected } = useAccount();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenAlert,
@@ -45,14 +51,7 @@ export default function ShoppingProductsDrawer() {
     onClose: onCloseAlert,
   } = useDisclosure();
 
-  const {
-    isOpen: isOpenErrorAlert,
-    onOpen: onOpenErrorAlert,
-    onClose: onCloseErrorAlert,
-  } = useDisclosure();
-
   const toast = useToast();
-  const cancelRef = React.useRef();
   const cancelRefAlert = React.useRef();
   const btnRef = React.useRef<HTMLInputElement>(null);
   const { cart, setCart } = useShoppingCart();
@@ -84,13 +83,12 @@ export default function ShoppingProductsDrawer() {
   });
   const { data, sendTransaction } = useSendTransaction(config);
 
-  const { isLoading, isSuccess, isError,error } = useWaitForTransaction({
+  const { isLoading, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
   });
 
   const pay = () => {
-   
-    if(total === "0"){
+    if (total === "0") {
       toast({
         title: "The cart is empty",
         status: "warning",
@@ -100,7 +98,7 @@ export default function ShoppingProductsDrawer() {
       return;
     }
 
-    if(!isConnected){
+    if (!isConnected) {
       toast({
         title: "Connect your wallet",
         status: "warning",
@@ -116,15 +114,7 @@ export default function ShoppingProductsDrawer() {
     if (isSuccess) {
       onOpenAlert();
     }
-  },[isSuccess,onOpenAlert]);
-
-  useEffect(() => {
-    console.log(error)
-    if (isError) {
-      onOpenErrorAlert();
-    }
-  },[isError,onOpenErrorAlert,error]);
-
+  }, [isSuccess, onOpenAlert]);
 
   return (
     <>
@@ -148,7 +138,7 @@ export default function ShoppingProductsDrawer() {
           <DrawerHeader>Shopping Cart</DrawerHeader>
 
           <DrawerBody>
-            {Array.from(cart).length <= 0 ? (
+            {cart && Array.from(cart).length <= 0 ? (
               "Cart is empty"
             ) : (
               <VStack
@@ -156,11 +146,12 @@ export default function ShoppingProductsDrawer() {
                 spacing={4}
                 align="stretch"
               >
-                {cart.map((ca: any) => (
-                  <Box key={ca.id}>
-                    {ca.name} ETH {ca.value}
-                  </Box>
-                ))}
+                {cart &&
+                  cart.map((ca: any) => (
+                    <Box key={ca.id}>
+                      {ca.name} ETH {ca.value}
+                    </Box>
+                  ))}
               </VStack>
             )}
           </DrawerBody>
@@ -181,35 +172,6 @@ export default function ShoppingProductsDrawer() {
             >
               Buy
             </Button>
-
-            <AlertDialog
-              isOpen={isOpenErrorAlert}
-              leastDestructiveRef={cancelRefAlert}
-              onClose={onClose}
-            >
-              <AlertDialogOverlay>
-                <AlertDialogContent>
-                  <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                    Rejected!
-                  </AlertDialogHeader>
-
-                  <AlertDialogBody>
-                    <div>The operation is failed!</div>
-                  </AlertDialogBody>
-
-                  <AlertDialogFooter>
-                    <Button
-                      colorScheme="red"
-                      onClick={onCloseErrorAlert}
-                      ml={3}
-                    >
-                      Success
-                    </Button>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialogOverlay>
-            </AlertDialog>
-
             <AlertDialog
               isOpen={isOpenAlert}
               leastDestructiveRef={cancelRefAlert}

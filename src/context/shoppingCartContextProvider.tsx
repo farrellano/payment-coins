@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Context = React.createContext({});
+
 
 type Cart = {
   id: string;
@@ -8,8 +8,20 @@ type Cart = {
   name: string;
 };
 
+type CartContextType = {
+  cart: Cart[] | null,
+  setCart: React.Dispatch<React.SetStateAction<Cart[] | null>>
+}
+
+const iCartContextState = {
+ cart: null,
+ setCart: () => {}
+}
+
+const Context = React.createContext<CartContextType>(iCartContextState);
+
 export function ShoppingCartContextProvider({ children }: any) {
-  const [cart, setCart] = useState<Cart[]>([]);
+  const [cart, setCart] = useState<Cart[] | null >([]);
 
   return (
     <Context.Provider value={{ cart, setCart }}>{children}</Context.Provider>
