@@ -19,17 +19,19 @@ export default function ProductAddToCart(products: any) {
   const { cart, setCart } = useShoppingCart();
 
   function addCart(value: number, name: string, id: string) {
-    const arr = Array.from(cart);
-    arr.push({ value, name, id });
+    if (cart) {
+      const arr = Array.from(cart);
+      arr.push({ value, name, id });
 
-    setCart(arr);
+      setCart(arr);
 
-    toast({
-      title: "added product",
-      status: "success",
-      duration: 1000,
-      isClosable: true,
-    });
+      toast({
+        title: "added product",
+        status: "success",
+        duration: 1000,
+        isClosable: true,
+      });
+    }
   }
 
   return (
@@ -98,7 +100,7 @@ export default function ProductAddToCart(products: any) {
           <Flex justifyContent="space-between" alignContent="center">
             <Box fontSize="2xl" color={useColorModeValue("gray.800", "white")}>
               <Box as="span" color={"gray.600"} fontSize="lg">
-                ETH {" "}
+                ETH{" "}
               </Box>
               {data.price}
             </Box>
