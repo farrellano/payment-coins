@@ -3,7 +3,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import {
   createClient,
   configureChains,
-  goerli,
+  sepolia,
   WagmiConfig,
 } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
@@ -15,7 +15,7 @@ import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import { ShoppingCartContextProvider } from "../context/shoppingCartContextProvider";
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [goerli],
+  [sepolia],
   [alchemyProvider({ apiKey: 'RFfll0H6n-vblRdj-0uqqtuq2a6P7iyG' })]
 );
 
